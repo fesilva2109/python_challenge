@@ -26,36 +26,84 @@ class User:
         print(f"Nome: {user.nomeUser} | E-mail: {user.email} | Telefone para contato: {user.telefoneContato}")
 
 class Servico:
-    servicos = []
-    def __init__(self, nomeServico, preco, idServico, status) :
-        self.nomeServico = nomeServico
-        self.preco = preco 
-        self.idServico = idServico
-        self.status = status  
+    def __init__(self, nomeServico, preco, idServico, status):
+        self.__nomeServico = nomeServico
+        self.__preco = preco 
+        self.__idServico = idServico
+        self.__status = status  
         Servico.servicos.append(self)
         
     def __str__(self):
-        return f"{self.nomeServico}  {self.preco}  {self.idServico} {self.status} "
+        return f"{self.__nomeServico}  {self.__preco}  {self.__idServico} {self.__status} "
+
+    # Métodos para acessar os atributos privados
+    def get_nome_servico(self):
+        return self.__nomeServico
+
+    def get_preco(self):
+        return self.__preco
+
+    def get_id_servico(self):
+        return self.__idServico
+
+    def get_status(self):
+        return self.__status
+
+    # Métodos para modificar os atributos privados
+    def set_nome_servico(self, nome):
+        self.__nomeServico = nome
+
+    def set_preco(self, preco):
+        self.__preco = preco
+
+    def set_id_servico(self, id_servico):
+        self.__idServico = id_servico
+
+    def set_status(self, status):
+        self.__status = status
+
     
-    def apresentarSevico(servico):
+class SistemaDeEncomendas:
+    def __init__(self):
+        self.servicos_disponiveis = []
+        self.servicos_encomendados = []
+            
+    def __str__(self):
+        return f"{self.servicos_disponiveis}  {self.servicos_encomendados} "
+
+
+    def adicionar_servico(self, servico):
+        self.servicos_disponiveis.append(servico)
+
+    def encomendar_servico(self, id_servico):
+        for servico in self.servicos_disponiveis:
+            if servico.idServico == id_servico:
+                servico.status = "Encomendado"
+                self.servicos_encomendados.append(servico)
+                self.servicos_disponiveis.remove(servico)
+                print("Serviço encomendado com sucesso")
+                return True
+        print("Serviçonão encontrado ")
+        return False
+
+    def listar_servicos_disponiveis(self):
+        print("Serviços Disponíveis:")
+        for servico in self.servicos_disponiveis:
+            print(f"ID: {servico.idServico} - Nome: {servico.nomeServico} - Preço: R${servico.preco}")
+
+    def listar_servicos_encomendados(self):
+        print("Serviços Encomendados:")
+        for servico in self.servicos_encomendados:
+            print(f"ID: {servico.idServico} - Nome: {servico.nomeServico} - Preço: R${servico.preco}")
+
+    def apresentarServico(servico):
         if servico.status == False:
-           servico.status = "Não Concluído"
+            servico.status = "Não Concluído"
         print(f"Serviço: {servico.nomeServico} | Preço: {servico.preco} | ID: {servico.idServico} | Status: {servico.status}")
 
     def apresentarLista():
-       
-       for servico in Servico.servicos:
-            print(f"Serviço: {servico.nomeServico} | Preço: {servico.preco} | ID: {servico.idServico} | Status: {servico.status}")
-
-    def valorTotalServicos():
-        preco_servico = sum(servico.preco for servico in Servico.servicos)
-        print(preco_servico)
-        taxaServico = preco_servico*0.03
-        total = preco_servico + taxaServico
-
-        return total, taxaServico, preco_servico
-
-## Listas de serviços
+        for servico in Servico.servicos:
+                print(f"Serviço: {servico.nomeServico} | Preço: {servico.preco} | ID: {servico.idServico} | Status: {servico.status}")
 
             
 ## Funções
@@ -84,7 +132,9 @@ def manutencaoPreventiva():
             case "1":
                 print("Marcando a troca de baterias")
                 trocaBateria = Servico("Troca de Bateria", 200, 1, False )
+                SistemaDeEncomendas.adicionar_servico(trocaBateria)
                 Servico.apresentarSevico(trocaBateria)
+                
                 break
             case "2":
                 print("Marcando a troca de faróis")
@@ -102,7 +152,17 @@ def manutencaoPreventiva():
                 break
             case _:
                 print("Opção inválida")
+
+def valorTotalServicos():
+        preco_servico = sum(servico.preco for servico in Servico.servicos)
+            
+        print(preco_servico)
+        taxaServico = preco_servico*0.03
+        total = preco_servico + taxaServico
+
+        return total, taxaServico, preco_servico                
 def pagarServico():
+    
     total_com_taxa, taxa_de_servico, preco_servico = Servico.valorTotalServicos()
     print(f"""
             1- Debito
