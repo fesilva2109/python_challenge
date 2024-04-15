@@ -1,16 +1,18 @@
+
 import os 
-os.system ("cls")
-## criando classe carro
+
+## Criando classe carro
 class Carro: 
     carros = []
-    def __init__(self,marca,modelo,ano):
+    def __init__(self, marca, modelo, ano):
         self.marca = marca
         self.modelo = modelo
         self.ano = ano
         Carro.carros.append(self)
     def __str__(self):
-      return f" {self.marca} |{self.modelo} | {self.ano}"
-    def apresentarCarro(carro):
+        return f" {self.marca} |{self.modelo} | {self.ano}"
+    @staticmethod
+    def apresentarCarro():
         for carro in Carro.carros:
             print(f"Marca: {carro.marca} | Modelo: {carro.modelo} | Ano: {carro.ano}")
     
@@ -22,6 +24,7 @@ class User:
         self.telefoneContato = telefoneContato
     def __str__(self):
         return f" {self.nomeUser} |{self.email} | {self.telefoneContato} "
+    @staticmethod
     def apresentarInformacoesUser(user):
         print(f"Nome: {user.nomeUser} | E-mail: {user.email} | Telefone para contato: {user.telefoneContato}")
 
@@ -38,6 +41,8 @@ class Servico:
 
     
 class SistemaDeEncomendas:
+    servicosDisponiveis = []
+    servicosEncomendados = []
     def __init__(self):
         self.servicosDisponiveis = []
         self.servicosEncomendados = []
@@ -53,27 +58,27 @@ class SistemaDeEncomendas:
     
     
 
-    def adicionarServico(self, servico):
-        self.servicosDisponiveis.append(servico)
+    def adicionarServico(servico):
+        SistemaDeEncomendas.servicosDisponiveis.append(servico)
 
-    def encomendarServico(self,idServico):
-        for servico in self.servicosDisponiveis:
+    def encomendarServico(idServico):
+        for servico in SistemaDeEncomendas.servicosDisponiveis:
             if servico.idServico == idServico:
                 servico.status = "Encomendado"
-                self.servicosEncomendados.append(servico)
+                SistemaDeEncomendas.servicosEncomendados.append(servico)
                 print("Serviço encomendado com sucesso")
                 return True
-        print("Serviçonão encontrado ")
+        print("Serviço não encontrado ")
         return False
 
-    def listarServicosDisponiveis(self):
+    def listarServicosDisponiveis():
         print("Serviços Disponíveis:")
-        for servico in self.servicosDisponiveis:
+        for servico in SistemaDeEncomendas.servicosDisponiveis:
             print(f"ID: {servico.idServico} - Nome: {servico.nomeServico} - Preço: R${servico.preco}")
 
-    def listarServicosEncomendados(self):
+    def listarServicosEncomendados():
         print("Serviços Encomendados:")
-        for servico in self.servicosEncomendados:
+        for servico in SistemaDeEncomendas.servicosEncomendados:
             print(f"ID: {servico.idServico} - Nome: {servico.nomeServico} - Preço: R${servico.preco}")
 
     def apresentarServico(servico):
@@ -81,24 +86,23 @@ class SistemaDeEncomendas:
             servico.status = "Não Concluído"
         print(f"Serviço: {servico.nomeServico} | Preço: {servico.preco} | ID: {servico.idServico} | Status: {servico.status}")
 
-    def apresentarLista():
-        for servico in Servico.servicos:
-                print(f"Serviço: {servico.nomeServico} | Preço: {servico.preco} | ID: {servico.idServico} | Status: {servico.status}")
+
 
             
 ## Funções
 def cadastrarCarro():
     novoCarro = Carro(input("Digite a Marca: "),input("Digite o Modelo: "),int(input("Digite o Ano: ")))
-    Carro.apresentarCarro(novoCarro)
+    Carro.apresentarCarro()
   
 def loginUser():
     novoUser = User(input("Digite seu nome completo: "), input("Digite seu e-mail: "), input("Digite seu telefone para contato: "))
     User.apresentarInformacoesUser(novoUser)
     
 
-
   
 def manutencaoPreventiva():
+    sistema  = SistemaDeEncomendas()
+    sistema.adicionarServicoDisponivel("Troca de Farol", 200, 1, False )
     
     while True:
         print("Escolha o tipo de serviço que será executado: \n")
@@ -106,16 +110,13 @@ def manutencaoPreventiva():
         print("2. Trocar faróis")
         print("3. Trocar óleo")
         print("4. Sair ")
-        SistemaDeEncomendas.listarServicosDisponiveis
-        sistema  = SistemaDeEncomendas()
-        sistema.adicionarServicoDisponivel("Troca de Farol", 200, 1, False )
-        
+        sistema.listarServicosDisponiveis()
 
         opcaoPreventiva = input("Selecione a opção: ")
 
         match opcaoPreventiva: 
             case "1":
-                SistemaDeEncomendas.encomendarServico(1)
+                sistema.encomendarServico(1)
                 print("Marcando troca de baterias")
                 break
             case "2":
@@ -132,7 +133,7 @@ def manutencaoPreventiva():
                 print("Opção inválida")
 
 def valorTotalServicos():
-        preco_servico = sum(servico.preco for servico in Servico.servicos)
+        preco_servico = sum(servico.preco for servico in SistemaDeEncomendas.self.servicos)
             
         print(preco_servico)
         taxaServico = preco_servico*0.03
@@ -142,6 +143,8 @@ def valorTotalServicos():
 def pagarServico():
     
     total_com_taxa, taxa_de_servico, preco_servico = Servico.valorTotalServicos()
+
+
     print(f"""
             1- Debito
             2- Crédito
@@ -198,7 +201,7 @@ while True:
             cadastrarCarro()
         case "3":
             os.system ("cls")
-            print("Acionando serivço de manutenção preventiva")
+            print("Acionando serviço de manutenção preventiva")
             manutencaoPreventiva()
             print()
         case "4":
@@ -208,8 +211,8 @@ while True:
         case "5": 
             os.system("cls")
             print("Serviços Agendados: ")
-            Servico.apresentarLista()
-            Servico.valorTotalServicos()
+            SistemaDeEncomendas.listarServicosEncomendados()
+            
             
         case "6":
             pagarServico()
@@ -218,8 +221,6 @@ while True:
             print("Saindo...")
             break
         case _:
-                print("Opção inválida")
-        
-        
-        
+            print("Opção inválida")
+
 
