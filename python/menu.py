@@ -1,225 +1,254 @@
 import os 
-os.system ("cls")
-## criando classe carro
+os.system("cls")
+
 class Carro: 
     carros = []
-    def __init__(self,marca,modelo,ano):
+    def __init__(self, marca, modelo, ano, usuario):
         self.marca = marca
         self.modelo = modelo
         self.ano = ano
+        self.usuario = usuario
         Carro.carros.append(self)
+
     def __str__(self):
-      return f" {self.marca} |{self.modelo} | {self.ano}"
-    def apresentarCarro(carro):
+        return f"{self.marca} | {self.modelo} | {self.ano}"
+
+    def apresentarCarro():
         for carro in Carro.carros:
-            print(f"Marca: {carro.marca} | Modelo: {carro.modelo} | Ano: {carro.ano}")
-    
-## Criando classe usuário
+            print(f"Marca: {carro.marca} | Modelo: {carro.modelo} | Ano: {carro.ano} | Usuário: {carro.usuario.nomeUser}")
+
 class User:
     def __init__(self, nomeUser, email, telefoneContato):
         self.nomeUser = nomeUser
         self.email = email
         self.telefoneContato = telefoneContato
+        self.carros = []
+        self.servicosMarcados = []
+        self.servicosAgendados = []
+
     def __str__(self):
-        return f" {self.nomeUser} |{self.email} | {self.telefoneContato} "
-    def apresentarInformacoesUser(user):
-        print(f"Nome: {user.nomeUser} | E-mail: {user.email} | Telefone para contato: {user.telefoneContato}")
+        return f"{self.nomeUser} | {self.email} | {self.telefoneContato}"
+    
+    def adicionarCarro(self, marca, modelo, ano):
+        novoCarro = Carro(marca, modelo, ano, self)
+        self.carros.append(novoCarro)
+
+    def listarCarros(self):
+        for carro in self.carros:
+            print(carro)
+
+    def listarServicosAgendados(self):
+        print("Serviços Agendados:")
+        for servico, _ in self.servicosAgendados:
+            print(servico)
+
+    def limparServicosAgendados(self):
+        self.servicosAgendados.clear
+        self.servicosAgendados = {}
+
+
+    def listarServicosMarcados(self):
+        print("Serviços Marcados:")
+        for servico, _ in self.servicosMarcados:
+            print(servico)
+
+    def limparServicosMarcados(self):
+        self.servicosMarcados.clear
+        self.servicosMarcados = {}
+   
 
 class Servico:
-    def __init__(self, nomeServico, preco, idServico, status):
+    def __init__(self, nomeServico, preco, idServico):
         self.nomeServico = nomeServico
         self.preco = preco 
         self.idServico = idServico
-        self.status = status  
-        
+        self.status = "Disponível"
+
     def __str__(self):
-        return f"{self.nomeServico}  {self.preco}  {self.idServico} {self.status} "
+        return f"Serviço: {self.nomeServico} | R${self.preco} |ID: {self.idServico} | Status:{self.status}"
 
 
-    
 class SistemaDeEncomendas:
-    def __init__(self):
-        self.servicosDisponiveis = []
-        self.servicosEncomendados = []
-            
-    def __str__(self):
-        return f"{self.servicosDisponiveis}  {self.servicosEncomendados} "
     
-    def adicionarServicoDisponivel(self, nomeServico, preco, idServico, status):
-        novoServico = Servico(nomeServico, preco, idServico, status)
-        self.servicosDisponiveis.append(novoServico)
-        print("Serviço adicionado com sucesso")
+    servicosDisponiveis = []
+    servicosAgendados = []
 
-    
-    
+    def adicionarServicoDisponivel(self, nomeServico, preco, idServico):
+        novoServico = Servico(nomeServico, preco, idServico)
+        SistemaDeEncomendas.servicosDisponiveis.append(novoServico)
+        
+    def pegarIDServico():
+       idServico = usuario.servicosMarcados[-1][0].idServico
+       return idServico
 
-    def adicionarServico(self, servico):
-        self.servicosDisponiveis.append(servico)
-
-    def encomendarServico(self,idServico):
-        for servico in self.servicosDisponiveis:
+    def marcarServico(self,idServico, usuario):
+        servico_marcado = None
+        for servico in SistemaDeEncomendas.servicosDisponiveis:
             if servico.idServico == idServico:
-                servico.status = "Encomendado"
-                self.servicosEncomendados.append(servico)
-                print("Serviço encomendado com sucesso")
-                return True
-        print("Serviçonão encontrado ")
-        return False
+                servico_marcado = servico
+                servico.status = "Marcado"
+                break
+        if servico_marcado:
+            usuario.servicosMarcados.append((servico_marcado, usuario))
+            print("Serviço marcado com sucesso")
+            return True
+        else:
+            print("Serviço não encontrado")
+            return False
 
-    def listarServicosDisponiveis(self):
-        print("Serviços Disponíveis:")
-        for servico in self.servicosDisponiveis:
-            print(f"ID: {servico.idServico} - Nome: {servico.nomeServico} - Preço: R${servico.preco}")
+  
 
-    def listarServicosEncomendados(self):
-        print("Serviços Encomendados:")
-        for servico in self.servicosEncomendados:
-            print(f"ID: {servico.idServico} - Nome: {servico.nomeServico} - Preço: R${servico.preco}")
-
-    def apresentarServico(servico):
-        if servico.status == False:
-            servico.status = "Não Concluído"
-        print(f"Serviço: {servico.nomeServico} | Preço: {servico.preco} | ID: {servico.idServico} | Status: {servico.status}")
-
-    def apresentarLista():
-        for servico in Servico.servicos:
-                print(f"Serviço: {servico.nomeServico} | Preço: {servico.preco} | ID: {servico.idServico} | Status: {servico.status}")
-
-            
 ## Funções
-def cadastrarCarro():
-    novoCarro = Carro(input("Digite a Marca: "),input("Digite o Modelo: "),int(input("Digite o Ano: ")))
-    Carro.apresentarCarro(novoCarro)
-  
+def cadastrarCarro(usuario):
+    marca = input("Digite a Marca: ")
+    modelo = input("Digite o Modelo: ")
+    ano = int(input("Digite o Ano: "))
+    usuario.adicionarCarro(marca, modelo, ano)
+
 def loginUser():
-    novoUser = User(input("Digite seu nome completo: "), input("Digite seu e-mail: "), input("Digite seu telefone para contato: "))
-    User.apresentarInformacoesUser(novoUser)
-    
+    while True: 
+        novoUser = User(str(input("Digite seu nome completo: ")), str(input("Digite seu e-mail: ")), str(input("Digite seu telefone para contato: ")))
+        return novoUser
 
-
-  
-def manutencaoPreventiva():
+def manutencaoPreventiva(usuario):
+    sistema = SistemaDeEncomendas()
+    sistema.adicionarServicoDisponivel("Troca de Farol", 200, 1)
+    sistema.adicionarServicoDisponivel("Troca de Óleo", 100, 2)
+    sistema.adicionarServicoDisponivel("Revisão de Freios", 150, 3)
+    sistema.adicionarServicoDisponivel("Alinhamento e Balanceamento", 80, 4)
+    sistema.adicionarServicoDisponivel("Troca de Bateria", 150, 5)
     
     while True:
         print("Escolha o tipo de serviço que será executado: \n")
-        print("1. Trocar baterias")
-        print("2. Trocar faróis")
-        print("3. Trocar óleo")
-        print("4. Sair ")
-        SistemaDeEncomendas.listarServicosDisponiveis
-        sistema  = SistemaDeEncomendas()
-        sistema.adicionarServicoDisponivel("Troca de Farol", 200, 1, False )
-        
+        print("1. Troca de Farol")
+        print("2. Troca de Óleo")
+        print("3. Revisão de Freios")
+        print("4. Alinhamento e Balanceamento")
+        print("5. Troca de Bateria")
+        print("6. Sair")
 
         opcaoPreventiva = input("Selecione a opção: ")
 
-        match opcaoPreventiva: 
+        match opcaoPreventiva:
             case "1":
-                SistemaDeEncomendas.encomendarServico(1)
-                print("Marcando troca de baterias")
+                sistema.marcarServico(1, usuario)
+                print("Marcando troca de farol")
                 break
             case "2":
-               
+                sistema.marcarServico(2, usuario)
+                print("Marcando troca de óleo")
                 break
-            case "3":     
-              
+            case "3":
+                sistema.marcarServico(3, usuario)
+                print("Marcando revisão de freios")
                 break
             case "4":
+                sistema.marcarServico(4, usuario)
+                print("Marcando alinhamento e balanceamento")
+                break
+            case "5":
+                sistema.marcarServico(5, usuario)
+                print("Marcando troca de bateria")
+                break
+            case "6":
                 print("Saindo")
-
                 break
             case _:
                 print("Opção inválida")
+        idServico = int(opcaoPreventiva)
+        sistema.marcarServico(idServico, usuario)
 
-def valorTotalServicos():
-        preco_servico = sum(servico.preco for servico in Servico.servicos)
-            
-        print(preco_servico)
-        taxaServico = preco_servico*0.03
-        total = preco_servico + taxaServico
-
-        return total, taxaServico, preco_servico                
-def pagarServico():
+def pagarServico(usuario):
     
-    total_com_taxa, taxa_de_servico, preco_servico = Servico.valorTotalServicos()
-    print(f"""
-            1- Debito
-            2- Crédito
-            3- Pix
-            4- Dinheiro
-            """)
-    forma_pagamento = int(input("Escolha a forma de pagamento: "))
-    if forma_pagamento > 4:
-        print("Inválido! Por favor digitar uma forma de pagamento válida")
+    if usuario.servicosMarcados == []:
+        print("Não há serviços marcados.")
+    else:
+        User.listarServicosMarcados(usuario)
+        resposta = input("Deseja pagar pelos serviços listados? (s/n): ")
+        if resposta.lower() == "s":
+            for servico in usuario.servicosMarcados:
+                usuario.servicosAgendados.append(servico)
+            User.limparServicosMarcados(usuario)
+            print("Pagamento efetuado com sucesso!")
+        else:
+            print("Pagamento cancelado.")
 
-    match forma_pagamento:
-        case 1:
-            print("=== Débito ===\n")
-            print("Valor do produto: ", preco_servico)
-            print("Taxa de serviço:", taxa_de_servico)
-            print("Total com taxa de serviço:", total_com_taxa)
-            resposta = input("\n Deseja Proseguir com o pagamento? ")
-            if resposta =="s" or "sim":
-                print("Serviço encomendado com sucesso!")
-                for servico in Servico.servicos:
-                    servico.status = "Serviço Encomendado"
-            else:
-                os.system("cls")
-                print("Saindo...")   
-        case 2:
-            print("Crédito")
-            parcela = int(input("Em quantas vezes deseja parcelar: "))
-            valor_final = valor / parcela
-            print(valor_final)
-            print(taxaServico)
-        case 3:
-            print("Pix")
-        case 4:
-            print("Dinheiro")
+# Função para listar usuários
+def listarUsuarios():
+    print("Lista de Usuários:")
+    for i, usuario in enumerate(usuarios):
+        print(f"{i+1}. {usuario}")
+
+# Função para obter o usuário selecionado
+def obterUsuario():
+    listarUsuarios()
+    while True:
+        usuario_index = int(input("Selecione o número do usuário: ")) -1
+        if 0 <= usuario_index < len(usuarios):
+            return usuarios[usuario_index]
+        else:
+            print("Por favor, selecione um número de usuário válido.")
 
 ## Menu Principal
+usuarios = []
+
 while True: 
     print("\n==== Menu ====")
-    print("1. Cadastro de Usúario")
+    print("1. Cadastro de Usuário")
     print("2. Cadastrar Carro")
     print("3. Manutenção Preventiva")
-    print("4. Histórico de Manutenção")
-    print("5. Serviços Agendados")
-    print("6. Pagamento Online")
+    print("4. Pagamento de Serviços")
+    print("5. Serviços Marcados")
+    print("6. Serviços Agendados")
     print("7. Sair")
 
     opcao = input("Selecione uma opção: ")
-    match opcao: 
-        case "1":
-            os.system("cls")
-            loginUser()
-        case "2":
-            os.system ("cls")
-            cadastrarCarro()
-        case "3":
-            os.system ("cls")
-            print("Acionando serivço de manutenção preventiva")
-            manutencaoPreventiva()
-            print()
-        case "4":
-            os.system ("cls")
-            print("Apresentando Histórico de Manutenção")
-            print()
-        case "5": 
-            os.system("cls")
-            print("Serviços Agendados: ")
-            Servico.apresentarLista()
-            Servico.valorTotalServicos()
-            
-        case "6":
-            pagarServico()
-        case "7":
-            os.system ("cls")
-            print("Saindo...")
-            break
-        case _:
-                print("Opção inválida")
-        
-        
-        
 
+    if opcao == "1":
+        novoUser = loginUser()
+        usuarios.append(novoUser)
+        print("Usuário cadastrado com sucesso!")
+    elif opcao == "2":
+        if len(usuarios) == 0:
+            print("Cadastre um usuário primeiro!")
+        else:
+            usuario = obterUsuario()
+            cadastrarCarro(usuario)
+    elif opcao == "3":
+        if len(usuarios) == 0:
+            print("Cadastre um usuário primeiro!")
+      
+        else:
+            usuario = obterUsuario()
+            manutencaoPreventiva(usuario)
+    elif opcao == "4":
+        if len(usuarios) == 0:
+            print("Cadastre um usuário primeiro!")
+    
+        else:
+            usuario = obterUsuario()
+            pagarServico(usuario)
+    elif opcao == "5":
+        if len(usuarios) == 0:
+            print("Cadastre um usuário primeiro!")
+        else:
+            usuario = obterUsuario()
+            if not usuario.servicosMarcados :
+                print ("Nenhum serviço marcado")
+            else:
+                User.listarServicosMarcados(usuario)
+                print("Seu serviço está marcado, prossiga para o pagamento do serviço para confirma-lo")
+    elif opcao == "6":
+        if len(usuarios) == 0:
+            print("Cadastre um usuário primeiro!")
+        else:
+            usuario = obterUsuario()
+            if not usuario.servicosMarcados :
+                print ("Nenhum serviço Agendado")
+            else:
+                User.listarServicosAgendados(usuario)
+    elif opcao == "7":
+        print("Saindo...")
+        break
+    else:
+        print("Opção inválida")
