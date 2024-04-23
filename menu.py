@@ -1,87 +1,103 @@
 import os 
-os.system("cls")
+os.system("cls")  # Limpa a tela do console (funciona apenas no Windows)
 
 class Carro: 
-    carros = []
+    carros = []  # Lista para armazenar todos os carros criados
+
     def __init__(self, marca, modelo, ano, usuario):
+        #Inicializa um objeto Carro com os atributos especificados.
         self.marca = marca
         self.modelo = modelo
         self.ano = ano
         self.usuario = usuario
-        Carro.carros.append(self)
+        Carro.carros.append(self)  # Adiciona o carro à lista de carros
 
     def __str__(self):
+        #Retorna uma representação em string do objeto Carro.
         return f"{self.marca} | {self.modelo} | {self.ano}"
 
     def apresentarCarro():
+        #Apresenta todos os carros criados até o momento.
         for carro in Carro.carros:
             print(f"Marca: {carro.marca} | Modelo: {carro.modelo} | Ano: {carro.ano} | Usuário: {carro.usuario.nomeUser}")
 
 class User:
     def __init__(self, nomeUser, email, telefoneContato):
+        #Inicializa um objeto User com os atributos especificados.
         self.nomeUser = nomeUser
         self.email = email
         self.telefoneContato = telefoneContato
-        self.carros = []
-        self.servicosMarcados = []
-        self.servicosAgendados = []
+        self.carros = []  # Lista para armazenar os carros do usuário
+        self.servicosMarcados = []  # Lista para armazenar os serviços marcados pelo usuário
+        self.servicosAgendados = []  # Lista para armazenar os serviços agendados pelo usuário
 
     def __str__(self):
+        #Retorna uma representação em string do objeto User.
         return f"{self.nomeUser} | {self.email} | {self.telefoneContato}"
     
     def adicionarCarro(self, marca, modelo, ano):
+        #Adiciona um novo carro à lista de carros do usuário.
         novoCarro = Carro(marca, modelo, ano, self)
         self.carros.append(novoCarro)
 
     def listarCarros(self):
+        #Lista todos os carros associados ao usuário.
         for carro in self.carros:
             print(carro)
 
     def listarServicosAgendados(self):
+        #Lista todos os serviços agendados pelo usuário.
         print("Serviços Agendados:")
         for servico, _ in self.servicosAgendados:
+            servico.status = "Agendado"
             print(servico)
 
     def limparServicosAgendados(self):
+        #Limpa a lista de serviços agendados do usuário.
         self.servicosAgendados.clear
         self.servicosAgendados = {}
 
-
     def listarServicosMarcados(self):
+        #Lista todos os serviços marcados pelo usuário.
         print("Serviços Marcados:")
         for servico, _ in self.servicosMarcados:
             print(servico)
 
     def limparServicosMarcados(self):
+        #Limpa a lista de serviços marcados pelo usuário.
         self.servicosMarcados.clear
         self.servicosMarcados = {}
    
 
 class Servico:
     def __init__(self, nomeServico, preco, idServico):
+        #Inicializa um objeto Servico com os atributos especificados.
         self.nomeServico = nomeServico
         self.preco = preco 
         self.idServico = idServico
         self.status = "Disponível"
 
     def __str__(self):
+        #Retorna uma representação em string do objeto Servico.
         return f"Serviço: {self.nomeServico} | R${self.preco} |ID: {self.idServico} | Status:{self.status}"
 
 
 class SistemaDeEncomendas:
-    
-    servicosDisponiveis = []
-    servicosAgendados = []
+    servicosDisponiveis = []  # Lista para armazenar os serviços disponíveis
+    servicosAgendados = []  # Lista para armazenar os serviços agendados
 
     def adicionarServicoDisponivel(self, nomeServico, preco, idServico):
+        #Adiciona um novo serviço à lista de serviços disponíveis.
         novoServico = Servico(nomeServico, preco, idServico)
         SistemaDeEncomendas.servicosDisponiveis.append(novoServico)
         
     def pegarIDServico():
-       idServico = usuario.servicosMarcados[-1][0].idServico
-       return idServico
+        #Retorna o ID do último serviço marcado pelo usuário.
+        idServico = usuario.servicosMarcados[-1][0].idServico
+        return idServico
 
-    def marcarServico(self,idServico, usuario):
+    def marcarServico(self, idServico, usuario):
+        #Marca um serviço para o usuário.
         servico_marcado = None
         for servico in SistemaDeEncomendas.servicosDisponiveis:
             if servico.idServico == idServico:
@@ -96,21 +112,22 @@ class SistemaDeEncomendas:
             print("Serviço não encontrado")
             return False
 
-  
-
 ## Funções
 def cadastrarCarro(usuario):
+    #Permite que o usuário cadastre um novo carro.
     marca = input("Digite a Marca: ")
     modelo = input("Digite o Modelo: ")
     ano = int(input("Digite o Ano: "))
     usuario.adicionarCarro(marca, modelo, ano)
 
 def loginUser():
+    #Cadastra um novo usuário e retorna o objeto User correspondente.
     while True: 
         novoUser = User(str(input("Digite seu nome completo: ")), str(input("Digite seu e-mail: ")), str(input("Digite seu telefone para contato: ")))
         return novoUser
 
 def manutencaoPreventiva(usuario):
+    #Permite que o usuário agende serviços de manutenção preventiva.
     sistema = SistemaDeEncomendas()
     sistema.adicionarServicoDisponivel("Troca de Farol", 200, 1)
     sistema.adicionarServicoDisponivel("Troca de Óleo", 100, 2)
@@ -159,7 +176,7 @@ def manutencaoPreventiva(usuario):
         sistema.marcarServico(idServico, usuario)
 
 def pagarServico(usuario):
-    
+    #Permite que o usuário pague pelos serviços marcados.
     if usuario.servicosMarcados == []:
         print("Não há serviços marcados.")
     else:
@@ -168,6 +185,7 @@ def pagarServico(usuario):
         if resposta.lower() == "s":
             for servico in usuario.servicosMarcados:
                 usuario.servicosAgendados.append(servico)
+                
             User.limparServicosMarcados(usuario)
             print("Pagamento efetuado com sucesso!")
         else:
@@ -175,12 +193,14 @@ def pagarServico(usuario):
 
 # Função para listar usuários
 def listarUsuarios():
+    #Lista todos os usuários cadastrados.
     print("Lista de Usuários:")
     for i, usuario in enumerate(usuarios):
         print(f"{i+1}. {usuario}")
 
 # Função para obter o usuário selecionado
 def obterUsuario():
+    #Permite que o usuário selecione um usuário da lista.
     listarUsuarios()
     while True:
         usuario_index = int(input("Selecione o número do usuário: ")) -1
@@ -217,14 +237,12 @@ while True:
     elif opcao == "3":
         if len(usuarios) == 0:
             print("Cadastre um usuário primeiro!")
-      
         else:
             usuario = obterUsuario()
             manutencaoPreventiva(usuario)
     elif opcao == "4":
         if len(usuarios) == 0:
             print("Cadastre um usuário primeiro!")
-    
         else:
             usuario = obterUsuario()
             pagarServico(usuario)
@@ -243,7 +261,7 @@ while True:
             print("Cadastre um usuário primeiro!")
         else:
             usuario = obterUsuario()
-            if not usuario.servicosMarcados :
+            if not usuario.servicosAgendados :
                 print ("Nenhum serviço Agendado")
             else:
                 User.listarServicosAgendados(usuario)
