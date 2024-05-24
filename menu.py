@@ -44,27 +44,42 @@ class Carro:
         self.servicosMarcados = {}
 
     def agendarServico(self):
+        # Este método agenda os serviços marcados pelo usuário.
+        
+        # Itera sobre cada serviço marcado na lista de serviços marcados do carro.
         for servico, _, horario_marcado in self.servicosMarcados:
+            # Adiciona o serviço marcado à lista de serviços agendados do carro.
             self.servicosAgendados.append(servico)
+            # Adiciona o serviço marcado ao histórico de manutenção do carro.
             self.historicoManutencao.append(servico)
+    
+        # Após agendar os serviços, limpa a lista de serviços marcados do carro.
         self.limparServicosMarcados()
 
     def adicionarReparoAoHistorico(self):
+        # Este método permite ao usuário adicionar um reparo ao histórico de manutenção do carro.
+        
+        # Verifica se o histórico de manutenção está vazio.
         if len(self.historicoManutencao) == 0:
-            print("O registro de manutençôes está vazio")
+            print("O registro de manutenções está vazio")
+            # Solicita ao usuário se deseja adicionar um reparo ao histórico.
             respostaHistorico = input("Gostaria de adicionar uma manutenção ao histórico? (s/n) ")
         else:
+            # Se o histórico não estiver vazio, lista os reparos previamente registrados.
             print("Histórico de Manutenções:")
             for servico in self.historicoManutencao:
                 print(servico)
+            # Solicita ao usuário se deseja adicionar um reparo ao histórico.
             respostaHistorico = input("Gostaria de adicionar uma manutenção ao histórico? (s/n) ")
+        
+        # Se a resposta do usuário for afirmativa, solicita detalhes do reparo.
         if respostaHistorico.lower() == "s":
             servico = adicionarServico(self)
+            # Adiciona o reparo ao histórico de manutenção.
             self.historicoManutencao.append(servico)
             print("Serviço adicionado")
         else: 
             print("Voltando ao menu principal")
-
 
 
 class User:
@@ -152,17 +167,21 @@ class SistemaDeEncomendas:
 
 ## Funções
 def adicionarServico(carro):
+    # Este método solicita detalhes sobre um serviço executado e o adiciona ao histórico de manutenções do carro.
+    # Solicita o tipo de serviço executado.
     servico = input("Qual tipo de serviço foi executado? ")
+    # Pergunta se o evento aconteceu mais de uma vez e valida a resposta.
     evento = input("Esse evento aconteceu mais de uma vez? (s/n) ")
-
     while evento.lower() not in ["s", "n"]:
         print("Opção inválida!")
         evento = input("Esse evento aconteceu mais de uma vez? (s/n) ")
 
+    # Se o evento aconteceu mais de uma vez, solicita a quantidade e adiciona ao histórico.
     if evento.lower() == "s":
         quantidade_evento = int(input("Quantas vezes? "))
         print("Adicionando serviço ao histórico de manutenções")
         return servico, quantidade_evento
+    # Caso contrário, apenas adiciona o serviço ao histórico.
     else:
         print("Adicionando serviço ao histórico de manutenções")
         return servico
@@ -185,17 +204,20 @@ modelos_validos = {
 }
 
 def validar_marca(marca):
+    # Este método verifica se a marca do carro é válida.
     return marca in marcas_validas
 
 def validar_modelo(marca, modelo):
+    # Este método verifica se o modelo do carro é válido para a marca especificada.
     return modelo in modelos_validos.get(marca, [])
 
 def validar_ano(ano):
+    # Este método verifica se o ano do carro é válido.
     try:
         ano = int(ano)
         return 1886 <= ano <= 2024
     except ValueError:
-        return False    
+        return False  
 
 def cadastrarCarro(usuario):
     #Permite que o usuário cadastre um novo carro
@@ -220,34 +242,43 @@ def cadastrarCarro(usuario):
         break
 
 def validar_email(email):
+    # Este método verifica se o formato do email é válido.
     padrao_email = r"^[\w\.-]+@[\w\.-]+\.\w+$"
     return re.match(padrao_email, email) is not None
 
 def validar_telefone(telefone):
+    # Este método verifica se o formato do número de telefone é válido.
     padrao_telefone = r"^\+?\d{9,15}$"
     return re.match(padrao_telefone, telefone) is not None
+
 def validar_nome(nome):
+    # Este método verifica se o formato do nome é válido.
     padrao_nome = r"^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$"
     return re.match(padrao_nome, nome) is not None 
+
 def loginUser():
- 
-    #Cadastra um novo usuário e retorna o objeto User correspondente.
-   while True:
-        
+    # Este método permite o cadastro de um novo usuário e retorna o objeto User correspondente.
+
+    while True:
+        # Solicita ao usuário seu nome completo e valida o formato.
         nome = str(input("Digite seu nome completo: "))
         if not validar_nome(nome):
             print("Nome inválido. Por favor, insira um nome válido composto apenas por letras e espaços.")
             continue
+
+        # Solicita ao usuário seu e-mail e valida o formato.
         email = str(input("Digite seu e-mail: "))
         if not validar_email(email):
             print("E-mail inválido. Por favor, tente novamente.")
             continue
+
+        # Solicita ao usuário seu número de telefone e valida o formato.
         telefone = str(input("Digite seu telefone para contato: "))
         if not validar_telefone(telefone):
             print("Número de telefone inválido. Por favor, tente novamente.")
             continue
-        
 
+        # Se todas as informações estiverem corretas, cria um novo objeto User e o retorna.
         novoUser = User(nome, email, telefone)
         return novoUser
 
